@@ -119,19 +119,19 @@ With an MTU of 1,500 bytes, a standard 20-byte IPv4 header and an 8-byte UDP hea
 
 The client sent messages before the server was running. Since UDP does not establish a connection or wait for an acknowledgment, the client can send without displaying an error. The messages sent before the server started were discarded. Once the server was listening, it displayed the new message.
 
-![Step 9a — Messages sent before and after the server starts](Step9a.PNG)
+![Step 9a — Messages sent before and after the server starts](/images/Step9a.PNG)
 
 ### b. Sending messages to closed UDP ports
 
 When a datagram is sent to a closed UDP port, the destination can reply with an ICMP **Destination Unreachable — Port Unreachable** message (type 3, code 3). In Wireshark, the UDP header embedded in the ICMP reply shows which destination port was unreachable.
 
-![Step 9b — ICMP Port Unreachable messages in Wireshark](Step9b.PNG)
+![Step 9b — ICMP Port Unreachable messages in Wireshark](/images/Step9b.PNG)
 
 ### c. Restarting the client while the server is running
 
 The server kept listening on port 8080 when the client stopped. It received no notification that the client had closed. Both client instances used the same source IP address, `127.0.0.1`, and used different source ports. The operating system assigned a source port each time the client opened a new UDP socket.
 
-![Step 9c — Source ports of two successive UDP clients](step9c.PNG)
+![Step 9c — Source ports of two successive UDP clients](/images/step9c.PNG)
 
 ## Step 10 — UDP and TCP
 
