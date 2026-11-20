@@ -1,14 +1,14 @@
 # Java for Networks — TP2: UDP Client and Server
 
-## (Step 1) — UDP server
+## Step 1 — UDP server
 
 We wrote `UDPServer.java` to receive UDP messages and display each message with the sender's IP address and port. The server uses port 8080 by default.
 
-## (Step 2) — Server test with Ncat
+## Step 2 — Server test with Ncat
 
 We used Ncat on Windows to send `Bonjour` to the server and confirmed that the server displayed the message.
 
-## (Step 3) — UDP client
+## Step 3 — UDP client
 
 We wrote `UDPClient.java` to send each line typed in the terminal as a UTF-8 UDP datagram to the server address and port given on the command line.
 
