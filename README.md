@@ -103,4 +103,46 @@ The receive buffer belongs to the receiving application. It allocates memory bas
 
 A packet must fit within the smallest MTU along its route. With a 1,500-byte MTU, a standard 20-byte IPv4 header and an 8-byte UDP header leave 1,472 bytes for the payload. Around 1,400 bytes gives some headroom for extra headers. If the packet is too large, it may be fragmented or dropped. When fragmentation occurs, losing one fragment prevents the receiver from reassembling the whole datagram.
 
-## Step 9. 
+## Step 8 — Receive Buffer and Datagram Size
+
+### a. Why does the receiver choose the receive buffer size?
+
+The receive buffer is allocated by the receiving application. The sender decides how many bytes to send, and the receiver decides how many bytes it can read from each datagram. If the client sends 100 bytes and the server uses a 64-byte buffer, the server reads the first 64 bytes and the remaining 36 bytes are discarded.
+
+### b. Why avoid UDP payloads larger than about 1,400 bytes?
+
+With an MTU of 1,500 bytes, a standard 20-byte IPv4 header and an 8-byte UDP header leave 1,472 bytes for the UDP payload. Using about 1,400 bytes leaves some room for additional headers. If an IP packet exceeds the MTU along its route, it may be fragmented or dropped. Losing one fragment prevents the receiver from reassembling the datagram.
+
+## Step 9 — Connectionless UDP
+
+### a. Sending messages before the server starts
+
+The client sent messages before the server was running. Since UDP does not establish a connection or wait for an acknowledgment, the client can send without displaying an error. The messages sent before the server started were discarded. Once the server was listening, it displayed the new message.
+
+![Step 9a — Messages sent before and after the server starts](Step9a.PNG)
+
+### b. Sending messages to closed UDP ports
+
+When a datagram is sent to a closed UDP port, the destination can reply with an ICMP **Destination Unreachable — Port Unreachable** message (type 3, code 3). In Wireshark, the UDP header embedded in the ICMP reply shows which destination port was unreachable.
+
+![Step 9b — ICMP Port Unreachable messages in Wireshark](Step9b.PNG)
+
+### c. Restarting the client while the server is running
+
+The server kept listening on port 8080 when the client stopped. It received no notification that the client had closed. Both client instances used the same source IP address, `127.0.0.1`, and used different source ports. The operating system assigned a source port each time the client opened a new UDP socket.
+
+![Step 9c — Source ports of two successive UDP clients](step9c.PNG)
+
+## Step 10 — UDP and TCP
+
+### a. What would happen with TCP in experiments a and c?
+
+In experiment a, the HTTP client from TP1 would first try to establish a TCP connection. On localhost, if no server were listening, the connection would normally be refused. The client would need to try again after the server starts.
+
+In experiment c, the server can detect a normal TCP closure when it reads the end of the stream. Each client restart opens a new TCP connection.
+
+### b. Why is UDP used for DNS, video streaming, and online games?
+
+- **DNS:** A client can send a short query without first opening a connection. It can retry if no answer arrives and switch to TCP if the UDP response is truncated.
+- **Real-time video:** A packet that arrives after its playback deadline is of little use. The application can keep playing when a packet is lost.
+- **Online games:** Updates such as player positions become outdated quickly. The game can use the latest update and add acknowledgments for important events.
